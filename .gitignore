@@ -1,0 +1,11 @@
+# Build output
+target/
+*.class
+*.log
+
+# Secrets
+.env
+
+# IDE
+.idea/
+.vscode/
