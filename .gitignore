@@ -1,11 +1,19 @@
-# Build output
+# Java / Maven
 target/
 *.class
 *.log
-
-# Secrets
+.mvn/wrapper/maven-wrapper.jar
+# Node
+node_modules/
+dist/
+# Secrets & local config
 .env
-
-# IDE
+*.pem
+# IDE / OS
 .idea/
 .vscode/
+*.iml
+.DS_Store
+# Terraform (later)
+*.tfstate*
+.terraform/
