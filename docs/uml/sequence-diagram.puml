@@ -1,0 +1,20 @@
+@startuml
+title Orbit - update application status
+actor User
+participant "React app" as Web
+participant ApplicationController as Ctl
+participant ApplicationService as Svc
+database PostgreSQL as DB
+queue Kafka
+participant AuditConsumer as Audit
+
+User -> Web : move card to Interview
+Web -> Ctl : PUT /api/applications/{id} + JWT
+Ctl -> Svc : update(ownerId, id, request)
+Svc -> DB : find by id AND owner, save
+Svc -> Kafka : publish STATUS_CHANGED
+Svc --> Ctl : updated application
+Ctl --> Web : 200 OK
+Kafka -> Audit : deliver event
+Audit -> DB : insert audit log (idempotent)
+@enduml
