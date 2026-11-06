@@ -1,0 +1,44 @@
+server:
+  error:
+    include-message: always   # so the UI can show messages like "Email already registered"
+
+spring:
+  application:
+    name: orbit
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/orbit}
+    username: ${DB_USER:orbit}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        max.block.ms: 3000
+    consumer:
+      group-id: orbit-audit
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+orbit:
+  jwt:
+    secret: ${JWT_SECRET}          # required, min 32 chars; never commit a real value
+    expiration-minutes: 60
+  kafka:
+    topic: orbit.application-events
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

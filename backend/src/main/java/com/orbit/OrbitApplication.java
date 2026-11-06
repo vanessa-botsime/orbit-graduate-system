@@ -1,4 +1,4 @@
-package main.java.com.orbit;
+package com.orbit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
