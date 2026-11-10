@@ -8,9 +8,10 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaConfig {
-
-    @Bean
+ @Bean
     NewTopic applicationEventsTopic(@Value("${orbit.kafka.topic}") String topic) {
-        return TopicBuilder.name(topic).partitions(3).replicas(1).build();
+        String safeTopic = java.util.Objects.requireNonNull(topic, "Kafka topic property must be configured");
+        return TopicBuilder.name(safeTopic).partitions(3).replicas(1).build();
     }
+
 }

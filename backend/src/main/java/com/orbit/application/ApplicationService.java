@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,11 +25,11 @@ public class ApplicationService {
 
     @Transactional
     public ApplicationResponse create(UUID ownerId, ApplicationRequest req) {
-        JobApplication a = new JobApplication(ownerId);
-        apply(a, req);
-        repo.save(a);
-        events.publish(ApplicationEvent.of("APPLICATION_CREATED", ownerId, a.getId(), label(a)));
-        return ApplicationResponse.from(a);
+        JobApplication application = new JobApplication(ownerId);
+        apply(application, req);
+        JobApplication saved = repo.save(application);
+        events.publish(ApplicationEvent.of("APPLICATION_CREATED", ownerId, saved.getId(), label(saved)));
+        return ApplicationResponse.from(saved);
     }
 
     @Transactional(readOnly = true)
@@ -58,10 +59,17 @@ public class ApplicationService {
     }
 
     @Transactional
-    public void delete(UUID ownerId, UUID id) {
-        JobApplication a = find(ownerId, id);
-        repo.delete(a);
-        events.publish(ApplicationEvent.of("APPLICATION_DELETED", ownerId, id, label(a)));
+    public void delete(UUID ownerId, @NonNull UUID id) {
+        JobApplication application = find(ownerId, id);
+
+        repo.deleteById(id);
+
+        events.publish(ApplicationEvent.of(
+            "APPLICATION_DELETED",
+            ownerId,
+            id,
+            label(application)
+        ));
     }
 
     /** Applications still unsent (wishlist/drafting) with a deadline in the next {@code days} days. */

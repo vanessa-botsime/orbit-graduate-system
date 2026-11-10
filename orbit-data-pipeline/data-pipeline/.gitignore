@@ -1,0 +1,6 @@
+# generated data stays out of git; the code that makes it is what we commit
+data/bronze/*.jsonl
+data/silver/
+data/gold/
+__pycache__/
+.pytest_cache/

@@ -22,24 +22,25 @@ public class CvMatchService {
             "join", "also", "such", "other", "including", "into", "their", "they", "them", "more", "than",
             "well", "been", "being", "per", "etc", "any", "may", "new", "use", "using", "used", "make",
             "ability", "skills", "knowledge", "understanding", "responsibilities", "requirements", "candidate");
-
-    public MatchResult score(String cvText, String jobDescription) {
+        public MatchResult score(String cvText, String jobDescription) {
         Map<String, Integer> frequency = new HashMap<>();
         for (String token : tokens(jobDescription)) {
-            frequency.merge(token, 1, Integer::sum);
-        }
+            frequency.merge(token, 1, (oldV, newV) -> oldV + newV);
+        }   
         List<String> keywords = frequency.entrySet().stream()
-                .sorted(Comparator.<Map.Entry<String, Integer>>comparingInt(Map.Entry::getValue).reversed()
-                        .thenComparing(Map.Entry::getKey))
+                .sorted(Comparator.<Map.Entry<String, Integer>>comparingInt(entry -> entry.getValue())
+                        .reversed()
+                        .thenComparing(entry -> entry.getKey()))
                 .limit(MAX_KEYWORDS)
-                .map(Map.Entry::getKey)
+                .map(entry -> entry.getKey())
                 .toList();
 
         Set<String> cvTokens = new HashSet<>(tokens(cvText));
         Map<Boolean, List<String>> split = keywords.stream()
-                .collect(Collectors.partitioningBy(cvTokens::contains));
-        List<String> matched = split.get(true);
-        List<String> missing = split.get(false);
+                .collect(Collectors.partitioningBy(token -> cvTokens.contains(token)));
+        
+        List<String> matched = Objects.requireNonNullElse(split.get(Boolean.TRUE), List.of());
+        List<String> missing = Objects.requireNonNullElse(split.get(Boolean.FALSE), List.of());
 
         int score = keywords.isEmpty() ? 0 : Math.round(100f * matched.size() / keywords.size());
         return new MatchResult(score, matched, missing);

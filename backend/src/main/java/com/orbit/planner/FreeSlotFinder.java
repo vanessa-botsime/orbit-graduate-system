@@ -16,7 +16,8 @@ public final class FreeSlotFinder {
 
     public static List<TimeRange> find(List<TimeRange> busy, LocalDate from, int days,
                                        LocalTime dayStart, LocalTime dayEnd, int minMinutes, ZoneId zone) {
-        List<TimeRange> sorted = busy.stream().sorted(Comparator.comparing(TimeRange::start)).toList();
+        List<TimeRange> sorted = busy.stream().sorted(Comparator.comparing((TimeRange t) -> t.start())).toList();
+
         Duration min = Duration.ofMinutes(minMinutes);
         List<TimeRange> free = new ArrayList<>();
 

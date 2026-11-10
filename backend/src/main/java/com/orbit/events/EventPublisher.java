@@ -28,10 +28,15 @@ public class EventPublisher {
      * Keyed by owner so one user's events stay ordered within a partition.
      * Known limitation: publishing is not atomic with the DB write (see ADR-001, transactional outbox).
      */
-    public void publish(ApplicationEvent event) {
+        public void publish(ApplicationEvent event) {
         try {
-            kafka.send(topic, event.ownerId().toString(), mapper.writeValueAsString(event))
-                    .whenComplete((result, error) -> {
+            String targetTopic = java.util.Objects.requireNonNull(topic, "Topic cannot be null");
+            String key = java.util.Objects.requireNonNull(event.ownerId().toString(), "Key cannot be null");
+            String payload = java.util.Objects.requireNonNull(mapper.writeValueAsString(event), "Payload cannot be null");
+            
+            kafka.send(targetTopic, key, payload)
+                    .whenComplete((result, error) ->            
+            {
                         if (error != null) {
                             log.error("Failed to publish {} event {}", event.type(), event.eventId(), error);
                         }
@@ -42,4 +47,5 @@ public class EventPublisher {
             log.error("Kafka unavailable, event {} not published", event.eventId(), e);
         }
     }
+
 }
