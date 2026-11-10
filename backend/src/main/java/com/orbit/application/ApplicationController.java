@@ -1,8 +1,8 @@
 package com.orbit.application;
-
 import com.orbit.config.CurrentUser;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +48,7 @@ public class ApplicationController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(Authentication auth, @PathVariable UUID id) {
+    public void delete(Authentication auth, @PathVariable @NonNull UUID id) {
         service.delete(CurrentUser.id(auth), id);
     }
 }
