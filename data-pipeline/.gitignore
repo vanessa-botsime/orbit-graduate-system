@@ -4,3 +4,4 @@ data/silver/
 data/gold/
 __pycache__/
 .pytest_cache/
+.venv/
