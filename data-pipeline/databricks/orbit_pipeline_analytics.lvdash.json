@@ -1,0 +1,272 @@
+{
+  "datasets": [
+    {
+      "name": "9b45a2f0",
+      "displayName": "Orbit Membership Status Changes Dataset",
+      "queryLines": [
+        "SELECT * FROM workspace.orbit.gold_status_transitions"
+      ]
+    },
+    {
+      "name": "19fb6ff0",
+      "displayName": "Orbit Daily Gold Event Records",
+      "queryLines": [
+        "SELECT * FROM workspace.orbit.gold_events_per_day"
+      ]
+    },
+    {
+      "name": "b9d25ff3",
+      "displayName": "Company Match Insights Dataset",
+      "queryLines": [
+        "SELECT * FROM workspace.orbit.gold_match_by_company"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "203dec5a",
+      "displayName": "Untitled page",
+      "layout": [
+        {
+          "widget": {
+            "name": "6d30cdcd",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "9b45a2f0",
+                  "fields": [
+                    {
+                      "name": "to_status",
+                      "expression": "`to_status`"
+                    },
+                    {
+                      "name": "from_status",
+                      "expression": "`from_status`"
+                    },
+                    {
+                      "name": "sum(count)",
+                      "expression": "SUM(`count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Application Status Transitions",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "from_status",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "to_status",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 3,
+            "width": 10,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "ad7a2c3d",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "19fb6ff0",
+                  "fields": [
+                    {
+                      "name": "event_type",
+                      "expression": "`event_type`"
+                    },
+                    {
+                      "name": "event_date",
+                      "expression": "`event_date`"
+                    },
+                    {
+                      "name": "sum(count)",
+                      "expression": "SUM(`count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Daily Event Counts"
+              },
+              "version": 3,
+              "mark": {
+                "layout": "stack"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "event_date",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "event_type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 9,
+            "width": 10,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "average-cv-match-score-by-company",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "b9d25ff3",
+                  "fields": [
+                    {
+                      "name": "sum(scores)",
+                      "expression": "SUM(`scores`)"
+                    },
+                    {
+                      "name": "company",
+                      "expression": "`company`"
+                    },
+                    {
+                      "name": "avg(avg_match_pct)",
+                      "expression": "AVG(`avg_match_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Average CV match score by company",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "company",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "avg(avg_match_pct)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "extra": [
+                  {
+                    "fieldName": "sum(scores)"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 17,
+            "width": 10,
+            "height": 10
+          }
+        },
+        {
+          "widget": {
+            "name": "92e138d7",
+            "spec": {
+              "widgetType": "text",
+              "version": 1,
+              "encodings": {
+                "text": {
+                  "lines": [
+                    "# Orbit: application pipeline analytics\n",
+                    "\n",
+                    "`Synthetic demo events processed through a bronze/silver/gold pipeline on Databricks`."
+                  ],
+                  "fields": []
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 0,
+            "width": 10,
+            "height": 3
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
